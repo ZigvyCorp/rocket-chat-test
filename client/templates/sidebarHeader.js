@@ -11,6 +11,11 @@ const viewModeIcon = {
 	condensed: 'list-alt',
 };
 
+
+const setMood = (mood) => {
+	Meteor.call('setUserMood', Meteor.userId(), mood);
+};
+
 const extendedViewOption = (user) => {
 	if (RocketChat.settings.get('Store_Last_Message')) {
 		return {
@@ -136,29 +141,107 @@ const toolbarButtons = (user) => [{
 		popover.open(config);
 	},
 },
-// {
-// 	name: t('Sort'),
-// 	icon: 'sort',
-// 	action: (e) => {
-// 		const options = [];
-// 		const config = {
-// 			template: 'sortlist',
-// 			currentTarget: e.currentTarget,
-// 			data: {
-// 				options,
-// 			},
-// 			offsetVertical: e.currentTarget.clientHeight + 10,
-// 		};
-// 		popover.open(config);
-// 	},
-// },
 {
+	name: t('Sort'),
+	icon: 'sort',
+	action: (e) => {
+		const options = [];
+		const config = {
+			template: 'sortlist',
+			currentTarget: e.currentTarget,
+			data: {
+				options,
+			},
+			offsetVertical: e.currentTarget.clientHeight + 10,
+		};
+		popover.open(config);
+	},
+},
+{
+
 	name: t('Create_A_New_Channel'),
 	icon: 'edit-rounded',
 	condition: () => RocketChat.authz.hasAtLeastOnePermission(['create-c', 'create-p']),
 	action: () => {
 		menu.close();
 		FlowRouter.go('create-channel');
+	},
+},
+{
+	name: t('User Moods'),
+	icon: 'sort',
+	action: (e) => {
+		const config = {
+			popoverClass: 'sidebar-header',
+			columns: [
+				{
+					groups: [
+						{
+							title: t('User Mood'),
+							items: [
+								{
+									icon: 'circle',
+									name: t('Happy'),
+									modifier: 'online',
+									action: () => setMood('happy'),
+								},
+								{
+									icon: 'circle',
+									name: t('Sad'),
+									modifier: 'away',
+									action: () => setMood('sad'),
+								},
+								{
+									icon: 'circle',
+									name: t('Uncertain'),
+									modifier: 'busy',
+									action: () => setMood('uncertain'),
+								},
+								{
+									icon: 'circle',
+									name: t('Confused'),
+									modifier: 'offline',
+									action: () => setMood('confused'),
+								},
+							],
+						},
+						{
+							items: [
+								{
+									icon: 'user',
+									name: t('My_Account'),
+									type: 'open',
+									id: 'account',
+									action: () => {
+										SideNav.setFlex('accountFlex');
+										SideNav.openFlex();
+										FlowRouter.go('account');
+										popover.close();
+									},
+								},
+								{
+									icon: 'sign-out',
+									name: t('Logout'),
+									type: 'open',
+									id: 'logout',
+									action: () => {
+										Meteor.logout(() => {
+											RocketChat.callbacks.run('afterLogoutCleanUp', user);
+											Meteor.call('logoutCleanUp', user);
+											FlowRouter.go('home');
+											popover.close();
+										});
+									},
+								},
+							],
+						},
+					],
+				},
+			],
+			currentTarget: e.currentTarget,
+			offsetVertical: e.currentTarget.clientHeight + 10,
+		};
+		popover.open(config);
 	},
 },
 {
@@ -227,10 +310,26 @@ const toolbarButtons = (user) => [{
 		popover.open(config);
 	},
 }];
-Template.zigvy_sidebarHeader.inheritsHelpersFrom('sidebarHeader');
+// Template.zigvy_sidebarHeader.inheritsHelpersFrom('sidebarHeader');
 Template.sidebarHeader.helpers({
+	myUserInfo() {
+		const id = Meteor.userId();
+
+		if (id == null && RocketChat.settings.get('Accounts_AllowAnonymousRead')) {
+			return {
+				username: 'anonymous',
+				status: 'online',
+			};
+		}
+		return id && Meteor.users.findOne(id, { fields: {
+			username: 1, status: 1,
+		} });
+	},
 	toolbarButtons() {
 		return toolbarButtons(Meteor.userId()).filter((button) => !button.condition || button.condition());
+	},
+	showToolbar() {
+		return showToolbar.get();
 	},
 });
 
