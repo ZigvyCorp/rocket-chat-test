@@ -70,4 +70,8 @@ Meteor.startup(function() {
 	// Replace the sidebarHeader with zigvy_sidebarHeader
 	Template.zigvy_sidebarHeader.replaces('sidebarHeader');
 
+
+	// Replace the popover with zigvy_popover
+	Template.zigvy_popover.replaces('popover');
+
 });

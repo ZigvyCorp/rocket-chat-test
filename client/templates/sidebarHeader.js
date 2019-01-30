@@ -201,36 +201,6 @@ const toolbarButtons = (user) => [{
 								},
 							],
 						},
-						{
-							items: [
-								{
-									icon: 'user',
-									name: t('My_Account'),
-									type: 'open',
-									id: 'account',
-									action: () => {
-										SideNav.setFlex('accountFlex');
-										SideNav.openFlex();
-										FlowRouter.go('account');
-										popover.close();
-									},
-								},
-								{
-									icon: 'sign-out',
-									name: t('Logout'),
-									type: 'open',
-									id: 'logout',
-									action: () => {
-										Meteor.logout(() => {
-											RocketChat.callbacks.run('afterLogoutCleanUp', user);
-											Meteor.call('logoutCleanUp', user);
-											FlowRouter.go('home');
-											popover.close();
-										});
-									},
-								},
-							],
-						},
 					],
 				},
 			],
