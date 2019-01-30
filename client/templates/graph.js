@@ -10,8 +10,6 @@ Template.graph.helpers({
 			name: key,
 			data: [Meteor.user().mood[key]],
 		}));
-		console.log(curUserMoodsArr);
-
 		// Use Meteor.defer() to craete chart after DOM is ready:
 		Meteor.defer(function() {
 			// Create standard Highcharts chart with options:
