@@ -4,6 +4,7 @@ import { Session } from 'meteor/session';
 import { TimeSync } from 'meteor/mizzao:timesync';
 import { UserPresence } from 'meteor/konecty:user-presence';
 import { fireGlobalEvent } from 'meteor/rocketchat:ui';
+import { Template } from 'meteor/templating';
 import toastr from 'toastr';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github.css';
@@ -66,4 +67,7 @@ Meteor.startup(function() {
 			fireGlobalEvent('status-changed', status);
 		}
 	});
+	// Replace the sidebarHeader with zigvy_sidebarHeader
+	Template.zigvy_sidebarHeader.replaces('sidebarHeader');
+
 });
