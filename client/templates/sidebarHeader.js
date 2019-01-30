@@ -169,7 +169,7 @@ const toolbarButtons = (user) => [{
 },
 {
 	name: t('User Moods'),
-	icon: 'sort',
+	icon: 'smile',
 	action: (e) => {
 		const config = {
 			popoverClass: 'sidebar-header',
@@ -180,27 +180,23 @@ const toolbarButtons = (user) => [{
 							title: t('User Mood'),
 							items: [
 								{
-									icon: 'circle',
+									icon: 'smile',
 									name: t('Happy'),
-									modifier: 'online',
 									action: () => setMood('happy'),
 								},
 								{
-									icon: 'circle',
+									icon: 'sad',
 									name: t('Sad'),
-									modifier: 'away',
 									action: () => setMood('sad'),
 								},
 								{
-									icon: 'circle',
+									icon: 'uncertain',
 									name: t('Uncertain'),
-									modifier: 'busy',
 									action: () => setMood('uncertain'),
 								},
 								{
-									icon: 'circle',
+									icon: 'confused',
 									name: t('Confused'),
-									modifier: 'offline',
 									action: () => setMood('confused'),
 								},
 							],
